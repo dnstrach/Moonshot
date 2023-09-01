@@ -8,20 +8,29 @@
 import SwiftUI
 
 struct ContentView: View {
-    let astronauts: [String: Astronaut] = Bundle.main.decode("astronauts.json")
-    let missions: [Mission] = Bundle.main.decode("missions.json")
+    @StateObject var contentVM = ContentViewModel()
+    
+    //Refactored to ContentViewModel
+//    @State private var switchColumnView = true
+//
+//    let astronauts: [String: Astronaut] = Bundle.main.decode("astronauts.json")
+//    let missions: [Mission] = Bundle.main.decode("missions.json")
     
     let columns = [
         GridItem(.adaptive(minimum: 150))
     ]
     
+    let column = [
+        GridItem(.flexible())
+    ]
+    
     var body: some View {
         NavigationView {
             ScrollView {
-                LazyVGrid(columns: columns) {
-                    ForEach(missions) { mission in
+                LazyVGrid(columns: contentVM.switchColumnView ? columns : column) {
+                    ForEach(contentVM.missions) { mission in
                         NavigationLink {
-                            MissionView(mission: mission, astronauts: astronauts)
+                            MissionView(mission: mission, astronauts: contentVM.astronauts)
                         } label: {
                             VStack {
                                 Image(mission.image)
@@ -35,7 +44,7 @@ struct ContentView: View {
                                         .font(.headline)
                                         .foregroundColor(.white)
                                     
-                                    Text(mission.formattedLaunchDate)
+                                    Text(mission.abbreviatedFormattedLaunchDate)
                                         .font(.caption)
                                         .foregroundColor(.white.opacity(0.5))
                                 }
@@ -56,6 +65,14 @@ struct ContentView: View {
             .navigationTitle("Moonshot")
             .background(.darkBackground)
             .preferredColorScheme(.dark)
+            .toolbar {
+                Button {
+                    contentVM.switchColumnView.toggle()
+                } label: {
+                    Image(systemName: "star.circle.fill")
+                        .foregroundColor(.white)
+                }
+            }
         }
     }
 }

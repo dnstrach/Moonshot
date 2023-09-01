@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct MissionView: View {
+    
     struct CrewMember {
         let role: String
         let astronaut: Astronaut
@@ -20,11 +21,17 @@ struct MissionView: View {
         GeometryReader { geometry in
             ScrollView {
                 VStack {
-                    Image(mission.image)
-                        .resizable()
-                        .scaledToFit()
-                        .frame(maxWidth: geometry.size.width * 0.6)
-                        .padding(.top)
+                    VStack(spacing: 20) {
+                        Image(mission.image)
+                            .resizable()
+                            .scaledToFit()
+                            .frame(maxWidth: geometry.size.width * 0.6)
+                            .padding(.top)
+                        
+                        Text(mission.formattedLaunchDate)
+                            .font(.title2)
+                            .fontWeight(.semibold)
+                    }
                     
                     VStack(alignment: .leading) {
                         Rectangle()
